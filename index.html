@@ -81,8 +81,47 @@
   .note .nl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--aurora);flex:none;padding-top:2px;width:64px}
   .note p{margin:0;font-size:14.5px;color:#d6e7e4}
 
+  /* ---------- constellation map ---------- */
+  .map{position:relative;z-index:1;margin-top:clamp(26px,4vw,42px);border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,rgba(14,20,48,.62),rgba(8,12,26,.55));padding:15px 16px 10px;overflow-x:auto}
+  .map h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:2px 2px 10px}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:0 2px 2px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .legend .l-done{background:var(--gold)}
+  .legend .l-now{background:var(--aurora)}
+  .legend .l-next{background:#16306e;box-shadow:0 0 0 1.5px var(--aurora)}
+  .legend .l-soon{background:#3c4775}
+  .constellation{display:block;width:100%;min-width:660px;height:auto;margin-top:8px}
+  .edge{stroke:rgba(122,136,184,.16);stroke-width:1.4;fill:none;transition:stroke .25s,stroke-width .25s}
+  .edge.opt{stroke:rgba(90,209,196,.40);stroke-width:1.6;stroke-dasharray:2 7}
+  .edge.lit{stroke:rgba(255,194,75,.85);stroke-width:2.6}
+  .edge.preview{stroke:rgba(90,209,196,.95);stroke-width:2.6;stroke-dasharray:none}
+  .cnode{cursor:default}
+  .cnode .halo{opacity:0}
+  .cnode.current .halo{fill:rgba(90,209,196,.5);animation:chalo 2.4s ease-out infinite}
+  .cnode.goal.reached .halo{fill:rgba(255,194,75,.6);animation:chalo 2.4s ease-out infinite}
+  .cnode .ring{fill:none;stroke:transparent;stroke-width:1.7;transition:stroke .25s}
+  .cnode.next .ring{stroke:rgba(90,209,196,.85);stroke-dasharray:3 4}
+  .cnode .dot{fill:#3c4775;stroke:#5a679c;stroke-width:1;transition:fill .25s,stroke .25s}
+  .cnode .lbl{fill:var(--muted);font-family:var(--mono);font-size:14px;text-anchor:middle;transition:fill .25s}
+  .cnode.visited .dot{fill:var(--gold);stroke:var(--gold-soft)}
+  .cnode.visited .lbl{fill:var(--ink)}
+  .cnode.current .dot{fill:var(--aurora);stroke:#cdf6ef}
+  .cnode.current .lbl{fill:var(--star)}
+  .cnode.next{cursor:pointer}
+  .cnode.next .dot{fill:#16306e;stroke:var(--aurora)}
+  .cnode.next .lbl{fill:var(--ink)}
+  .cnode.visited{cursor:pointer}
+  .cnode.preview .dot{fill:var(--gold-soft);stroke:#fff}
+  .cnode.preview .lbl{fill:var(--star)}
+  .cnode.goal .dot{fill:url(#goalGrad);stroke:var(--gold-soft);stroke-width:1.4}
+  .cnode:focus{outline:none}
+  .cnode:focus-visible .dot{stroke:var(--aurora);stroke-width:2}
+  @keyframes chalo{0%{opacity:.6}70%{opacity:0}100%{opacity:0}}
+
   /* choices */
   .choices{display:grid;gap:12px;margin-top:30px}
+  .choice .ct .route{display:block;margin-top:7px;font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:#86b9c6;line-height:1.5}
+  .choice .ct .route b{color:var(--gold-soft);font-weight:600}
   .choice{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;font:inherit;color:var(--ink);padding:17px 19px;border-radius:13px;border:1px solid var(--line);background:rgba(22,32,73,.5);transition:transform .15s,border-color .15s,background .15s}
   .choice:hover{transform:translateY(-2px);border-color:var(--gold);background:rgba(255,194,75,.06)}
   .choice:focus-visible{outline:2px solid var(--aurora);outline-offset:2px}
@@ -122,6 +161,7 @@
   @media (prefers-reduced-motion:reduce){
     .tstep.is-current .tstar{animation:none}
     .fade{animation:none}
+    .cnode.current .halo,.cnode.goal.reached .halo{animation:none;opacity:.45}
   }
 </style>
 
@@ -134,6 +174,17 @@
     <p class="lede">„You can't connect the dots looking forward; you can only connect them looking backward."<span class="by">— Steve Jobs, Stanford 2005</span></p>
     <div class="goalbar"><span class="dot"></span><span>Zielstern:</span> <b>NYU · Dermatologie · New York</b></div>
   </header>
+
+  <section class="map" aria-label="Sternkarte deiner Wege">
+    <h2>Die Sternkarte — alle Punkte, alle Wege</h2>
+    <div class="legend">
+      <span><i class="l-done"></i>gegangen</span>
+      <span><i class="l-now"></i>du bist hier</span>
+      <span><i class="l-next"></i>nächste Wahl</span>
+      <span><i class="l-soon"></i>noch verschlossen</span>
+    </div>
+    <svg id="constellation" class="constellation" viewBox="0 0 1000 560" role="img" aria-label="Entscheidungs-Sternkarte: Schulwege, die sich zum Zielstern NYU verbinden"></svg>
+  </section>
 
   <div class="stage">
     <aside class="rail" aria-label="Dein Weg bisher">
@@ -273,11 +324,121 @@
 
   /* ---------------- engine ---------------- */
   var panel=document.getElementById("panel"),trailEl=document.getElementById("trail"),goalStar=document.getElementById("goalstar");
+  var svg=document.getElementById("constellation");
   var path=[];
+
+  /* map node positions (normalized 0..1) */
+  var POS={
+    start:[.04,.50], davinci:[.18,.20], milton:[.17,.80],
+    msa:[.31,.13], abitur:[.45,.18], short:[.29,.57], year:[.29,.74],
+    gcse:[.31,.93], backde:[.46,.72], alevels:[.47,.93],
+    demed:[.64,.30], uscollege:[.64,.61], medschool:[.77,.58],
+    residency:[.88,.49], goal:[.96,.39]
+  };
+
+  function scrollTop(){window.scrollTo({top:0,behavior:reduce?"auto":"smooth"});}
 
   function go(id){ path.push(id); render(); }
   function back(){ if(path.length>1){ path.pop(); render(); } }
   function reset(){ path=["start"]; render(); }
+
+  /* shortest route from a node to the goal, over the choice graph */
+  function shortestPath(fromId){
+    if(fromId==="goal")return ["goal"];
+    var q=[[fromId]],seen={};seen[fromId]=1;
+    while(q.length){
+      var p=q.shift(),last=p[p.length-1],node=G[last];
+      if(!node.choices)continue;
+      for(var i=0;i<node.choices.length;i++){
+        var nx=node.choices[i].to;
+        if(nx==="goal")return p.concat(["goal"]);
+        if(!seen[nx]){seen[nx]=1;q.push(p.concat([nx]));}
+      }
+    }
+    return [fromId];
+  }
+  function routeNames(toId){
+    var sp=shortestPath(toId),names=[];
+    for(var i=0;i<sp.length;i++)names.push(G[sp[i]].star);
+    if(names.length>4)names=[names[0],names[1],"…",names[names.length-1]];
+    var out="";
+    for(i=0;i<names.length;i++){
+      if(i)out+=" › ";
+      out+=(i===names.length-1)?"<b>"+names[i]+"</b>":names[i];
+    }
+    return out;
+  }
+
+  /* build the constellation once */
+  function buildMap(){
+    var VW=1000,VH=560,PX=82,PY=68;
+    function CX(mx){return PX+mx*(VW-2*PX);}
+    function CY(my){return PY+my*(VH-2*PY);}
+    var seen={},edges=[],id,i;
+    for(id in G){var nd=G[id];if(!nd.choices)continue;
+      for(i=0;i<nd.choices.length;i++){var to=nd.choices[i].to,key=id+">"+to;
+        if(!seen[key]){seen[key]=1;edges.push([id,to]);}}}
+    var s='<defs><radialGradient id="goalGrad" cx="50%" cy="45%" r="60%">'+
+          '<stop offset="0%" stop-color="#fff"/><stop offset="55%" stop-color="#ffc24b"/>'+
+          '<stop offset="100%" stop-color="#a06f16"/></radialGradient></defs>';
+    s+='<g class="edges">';
+    for(i=0;i<edges.length;i++){var a=POS[edges[i][0]],b=POS[edges[i][1]];if(!a||!b)continue;
+      s+='<line class="edge" id="e_'+edges[i][0]+'_'+edges[i][1]+'" x1="'+CX(a[0]).toFixed(1)+'" y1="'+CY(a[1]).toFixed(1)+'" x2="'+CX(b[0]).toFixed(1)+'" y2="'+CY(b[1]).toFixed(1)+'"/>';}
+    s+='</g><g class="nodes">';
+    for(id in POS){var p=POS[id],cx=CX(p[0]),cy=CY(p[1]),goal=!!G[id].isGoal,dy=p[1]>0.66?-15:25;
+      s+='<g class="cnode'+(goal?' goal':'')+'" id="g_'+id+'" data-id="'+id+'" tabindex="0">'+
+         '<circle class="halo" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(goal?28:22)+'"/>'+
+         '<circle class="ring" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(goal?19:14)+'"/>'+
+         '<circle class="dot" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(goal?13:8)+'"/>'+
+         '<text class="lbl" x="'+cx.toFixed(1)+'" y="'+(cy+dy).toFixed(1)+'">'+G[id].star+'</text>'+
+         '</g>';}
+    s+='</g>';
+    svg.innerHTML=s;
+    var gs=svg.querySelectorAll(".cnode");
+    for(i=0;i<gs.length;i++){(function(g){
+      var nid=g.getAttribute("data-id");
+      function act(){onNodeClick(nid);}
+      g.addEventListener("click",act);
+      g.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});
+      g.addEventListener("mouseenter",function(){if(g.classList.contains("next"))preview(nid);});
+      g.addEventListener("mouseleave",clearPreview);
+      g.addEventListener("focus",function(){if(g.classList.contains("next"))preview(nid);});
+      g.addEventListener("blur",clearPreview);
+    })(gs[i]);}
+  }
+
+  function onNodeClick(id){
+    var cur=path[path.length-1],node=G[cur];
+    if(node.choices){for(var i=0;i<node.choices.length;i++){if(node.choices[i].to===id){go(id);scrollTop();return;}}}
+    var idx=path.indexOf(id);
+    if(idx>-1&&idx<path.length-1){path=path.slice(0,idx+1);render();scrollTop();}
+  }
+
+  function addPrev(eid){var e=document.getElementById(eid);if(e)e.classList.add("preview");}
+  function preview(toId){
+    clearPreview();
+    var cur=path[path.length-1],sp=shortestPath(toId);
+    addPrev("e_"+cur+"_"+toId);
+    for(var i=0;i<sp.length;i++){var g=document.getElementById("g_"+sp[i]);if(g)g.classList.add("preview");
+      if(i<sp.length-1)addPrev("e_"+sp[i]+"_"+sp[i+1]);}
+  }
+  function clearPreview(){var ps=svg.querySelectorAll(".preview");for(var i=0;i<ps.length;i++)ps[i].classList.remove("preview");}
+
+  function updateMap(){
+    clearPreview();
+    var nn=svg.querySelectorAll(".cnode"),ee=svg.querySelectorAll(".edge"),i;
+    for(i=0;i<nn.length;i++)nn[i].classList.remove("visited","current","next","reached");
+    for(i=0;i<ee.length;i++)ee[i].classList.remove("lit","opt");
+    for(i=0;i<path.length;i++){var g=document.getElementById("g_"+path[i]);if(g)g.classList.add("visited");
+      if(i>0){var le=document.getElementById("e_"+path[i-1]+"_"+path[i]);if(le)le.classList.add("lit");}}
+    var cur=path[path.length-1],gc=document.getElementById("g_"+cur);
+    if(gc){gc.classList.remove("visited");gc.classList.add("current");}
+    var node=G[cur];
+    if(node.choices){for(i=0;i<node.choices.length;i++){var to=node.choices[i].to;
+      var gn=document.getElementById("g_"+to);if(gn)gn.classList.add("next");
+      var oe=document.getElementById("e_"+cur+"_"+to);if(oe)oe.classList.add("opt");}}
+    if(node.isGoal&&gc)gc.classList.add("reached");
+  }
 
   function renderTrail(){
     var html="";
@@ -288,13 +449,13 @@
             '<span class="tage">'+n.age+'</span></li>';
     }
     trailEl.innerHTML=html;
-    var atGoal=G[path[path.length-1]].isGoal;
-    goalStar.classList.toggle("lit",atGoal);
+    goalStar.classList.toggle("lit",!!G[path[path.length-1]].isGoal);
   }
 
   function render(){
     var n=G[path[path.length-1]];
     renderTrail();
+    updateMap();
     var h="";
     h+='<div class="pk">';
     if(n.tag)h+='<span class="chip '+n.tag.c+'">'+n.tag.t+'</span>';
@@ -312,7 +473,8 @@
       h+='<div class="choices">';
       for(var c=0;c<n.choices.length;c++){var ch=n.choices[c];
         h+='<button class="choice" data-to="'+ch.to+'"><span class="num">'+ch.n+'</span>'+
-           '<span class="ct"><b>'+ch.t+'</b><span>'+ch.s+'</span></span><span class="arr">→</span></button>';
+           '<span class="ct"><b>'+ch.t+'</b><span>'+ch.s+'</span>'+
+           '<span class="route">↳ '+routeNames(ch.to)+'</span></span><span class="arr">→</span></button>';
       }
       h+='</div>';
     }
@@ -326,11 +488,19 @@
     panel.classList.remove("fade");void panel.offsetWidth;panel.classList.add("fade");
 
     var btns=panel.querySelectorAll(".choice");
-    for(var k=0;k<btns.length;k++)btns[k].addEventListener("click",function(){go(this.getAttribute("data-to"));window.scrollTo({top:0,behavior:reduce?"auto":"smooth"});});
+    for(var k=0;k<btns.length;k++){(function(btn){
+      var to=btn.getAttribute("data-to");
+      btn.addEventListener("click",function(){go(to);scrollTop();});
+      btn.addEventListener("mouseenter",function(){preview(to);});
+      btn.addEventListener("mouseleave",clearPreview);
+      btn.addEventListener("focus",function(){preview(to);});
+      btn.addEventListener("blur",clearPreview);
+    })(btns[k]);}
     var bb=document.getElementById("b-back");if(bb)bb.addEventListener("click",back);
     var br=document.getElementById("b-reset");if(br)br.addEventListener("click",reset);
   }
 
+  buildMap();
   reset();
 })();
 </script>
