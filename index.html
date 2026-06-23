@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>what comes next. &gt; connecting the dots..</title>
+<style>html,body{margin:0;padding:0;background:#06080f}</style>
+</head>
+<body>
+<style>
+  :root{
+    --night:#080c1a;
+    --night-2:#0e1430;
+    --panel:#121a3a;
+    --panel-2:#162049;
+    --line:#26315f;
+    --star:#f3ead2;
+    --ink:#c6cde6;
+    --muted:#828db4;
+    --gold:#ffc24b;
+    --gold-soft:#ffd884;
+    --aurora:#5ad1c4;
+    --good:#7fdca0;
+    --r:16px;
+    --maxw:1160px;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  #sky-canvas{position:fixed;inset:0;z-index:0;display:block}
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px) 80px;color:var(--ink);font-family:var(--sans);line-height:1.6}
+  .wrap::selection,.wrap *::selection{background:rgba(255,194,75,.28)}
+
+  /* ---------- masthead ---------- */
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
+  .appname{font-family:var(--mono);font-weight:500;font-size:clamp(20px,3.4vw,33px);letter-spacing:-.01em;line-height:1.25;color:var(--star);margin:0 0 24px}
+  .appname span{color:var(--aurora);padding:0 .15em}
+  .lede{font-family:var(--serif);font-style:italic;font-size:clamp(20px,3.1vw,30px);line-height:1.4;color:var(--star);max-width:24ch;text-wrap:balance;margin:0 0 8px}
+  .lede .by{display:block;font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+  .goalbar{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:9px 15px;border:1px solid var(--line);border-radius:999px;background:rgba(18,26,58,.5);backdrop-filter:blur(4px)}
+  .goalbar .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px 2px rgba(255,194,75,.7)}
+  .goalbar b{color:var(--star);font-weight:600}
+  .goalbar span{color:var(--muted);font-size:13.5px}
+
+  /* ---------- layout ---------- */
+  .stage{display:grid;grid-template-columns:230px 1fr;gap:clamp(20px,3vw,40px);margin-top:clamp(30px,5vw,54px);align-items:start}
+
+  /* ---------- constellation rail ---------- */
+  .rail{position:sticky;top:24px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,rgba(20,28,64,.55),rgba(10,14,32,.55));padding:18px 16px}
+  .rail h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:2px 2px 16px}
+  .trail{list-style:none;margin:0;padding:0;display:flex;flex-direction:column-reverse;gap:0}
+  .tstep{position:relative;padding:0 0 22px 28px;min-height:30px}
+  .tstep:first-child{padding-bottom:4px}
+  .tstep::before{content:"";position:absolute;left:7px;top:14px;bottom:-8px;width:2px;background:linear-gradient(180deg,var(--gold),rgba(255,194,75,.25))}
+  .tstep:first-child::before{display:none}
+  .tstar{position:absolute;left:0;top:3px;width:16px;height:16px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px 1px rgba(255,194,75,.6)}
+  .tstep.is-current .tstar{background:var(--aurora);box-shadow:0 0 0 0 rgba(90,209,196,.6);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(90,209,196,.55)}70%{box-shadow:0 0 0 11px rgba(90,209,196,0)}100%{box-shadow:0 0 0 0 rgba(90,209,196,0)}}
+  .tlabel{font-size:13px;color:var(--star);font-weight:600;line-height:1.3}
+  .tage{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .goalstar{display:flex;align-items:center;gap:11px;padding:0 0 18px 0;margin-bottom:6px;border-bottom:1px dashed var(--line)}
+  .goalstar .gdot{width:20px;height:20px;border-radius:50%;flex:none;background:radial-gradient(circle,#fff 0%,var(--gold) 55%,transparent 72%);opacity:.32;transition:opacity .6s,box-shadow .6s}
+  .goalstar.lit .gdot{opacity:1;box-shadow:0 0 22px 4px rgba(255,194,75,.7)}
+  .goalstar .gt{font-size:12.5px;line-height:1.3}
+  .goalstar .gt b{color:var(--star);display:block}
+  .goalstar .gt small{color:var(--muted);font-family:var(--mono);font-size:10px;letter-spacing:.1em}
+
+  /* ---------- main panel ---------- */
+  .panel{border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--panel),var(--night-2));padding:clamp(22px,3.4vw,38px);min-height:360px}
+  .pk{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:18px}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;border-radius:999px;border:1px solid var(--line);color:var(--ink)}
+  .chip.de{color:#ffd0a8;border-color:#5a3d2b;background:rgba(90,61,43,.2)}
+  .chip.uk{color:#acd4ff;border-color:#2c4a6e;background:rgba(44,74,110,.2)}
+  .chip.us{color:#c7b6ff;border-color:#473a6e;background:rgba(71,58,110,.2)}
+  .chip.age{color:var(--muted)}
+  .ptitle{font-family:var(--serif);font-size:clamp(26px,4vw,40px);line-height:1.12;color:var(--star);margin:0 0 16px;text-wrap:balance}
+  .pbody{font-size:16px;color:var(--ink);max-width:62ch;margin:0 0 4px}
+  .pbody+.pbody{margin-top:14px}
+  .note{display:flex;gap:12px;margin:22px 0 4px;padding:15px 17px;border-radius:12px;background:rgba(90,209,196,.07);border:1px solid rgba(90,209,196,.22)}
+  .note .nl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--aurora);flex:none;padding-top:2px;width:64px}
+  .note p{margin:0;font-size:14.5px;color:#d6e7e4}
+
+  /* choices */
+  .choices{display:grid;gap:12px;margin-top:30px}
+  .choice{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;font:inherit;color:var(--ink);padding:17px 19px;border-radius:13px;border:1px solid var(--line);background:rgba(22,32,73,.5);transition:transform .15s,border-color .15s,background .15s}
+  .choice:hover{transform:translateY(-2px);border-color:var(--gold);background:rgba(255,194,75,.06)}
+  .choice:focus-visible{outline:2px solid var(--aurora);outline-offset:2px}
+  .choice .num{font-family:var(--mono);font-size:13px;color:var(--gold);flex:none;width:22px}
+  .choice .ct{flex:1}
+  .choice .ct b{display:block;color:var(--star);font-weight:600;font-size:16px}
+  .choice .ct span{font-size:13.5px;color:var(--muted)}
+  .choice .arr{flex:none;color:var(--muted);transition:transform .15s,color .15s;font-size:18px}
+  .choice:hover .arr{transform:translateX(4px);color:var(--gold)}
+
+  /* goal panel */
+  .arrived{text-align:center;padding:8px 0}
+  .arrived .crown{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  .reprise{font-family:var(--serif);font-style:italic;font-size:clamp(19px,2.6vw,25px);line-height:1.45;color:var(--star);max-width:30ch;margin:22px auto;text-wrap:balance}
+  .reprise .by{display:block;font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+
+  /* controls */
+  .controls{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:14px;cursor:pointer;padding:11px 18px;border-radius:11px;border:1px solid var(--line);background:transparent;color:var(--ink);transition:border-color .15s,color .15s}
+  .btn:hover{border-color:var(--ink);color:var(--star)}
+  .btn:focus-visible{outline:2px solid var(--aurora);outline-offset:2px}
+  .btn.primary{border-color:var(--gold);color:var(--gold)}
+  .btn.primary:hover{background:rgba(255,194,75,.08)}
+
+  .fade{animation:fade .45s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  footer{margin-top:46px;text-align:center;color:var(--muted);font-size:12.5px;font-family:var(--mono);letter-spacing:.04em}
+
+  @media (max-width:760px){
+    .stage{grid-template-columns:1fr}
+    .rail{position:static;order:2}
+    .panel{order:1}
+    .trail{flex-direction:column}
+    .tstep::before{top:14px;bottom:-8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .tstep.is-current .tstar{animation:none}
+    .fade{animation:none}
+  }
+</style>
+
+<canvas id="sky-canvas" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">für Filippa · 15</p>
+    <h1 class="appname">what comes next. <span>&gt;</span> connecting the dots..</h1>
+    <p class="lede">„You can't connect the dots looking forward; you can only connect them looking backward."<span class="by">— Steve Jobs, Stanford 2005</span></p>
+    <div class="goalbar"><span class="dot"></span><span>Zielstern:</span> <b>NYU · Dermatologie · New York</b></div>
+  </header>
+
+  <div class="stage">
+    <aside class="rail" aria-label="Dein Weg bisher">
+      <div class="goalstar" id="goalstar">
+        <span class="gdot"></span>
+        <span class="gt"><b>NYU · Dermatologie</b><small>NEW YORK</small></span>
+      </div>
+      <h2>Deine Punkte</h2>
+      <ul class="trail" id="trail"></ul>
+    </aside>
+
+    <main class="panel" id="panel" aria-live="polite"></main>
+  </div>
+
+  <footer>Für dich gebaut — spiel jeden Weg durch, so oft du willst. ☆</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- starfield ---------------- */
+  var canvas=document.getElementById("sky-canvas"),ctx=canvas.getContext("2d");
+  var stars=[],W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  function resize(){
+    W=canvas.clientWidth=window.innerWidth;H=canvas.clientHeight=window.innerHeight;
+    canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(W*H/9000);stars=[];
+    for(var i=0;i<n;i++){stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.3,b:Math.random()*.5+.3,tw:Math.random()*6.28,sp:Math.random()*.8+.2,warm:Math.random()<.18});}
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    var g=ctx.createRadialGradient(W*.5,H*.16,0,W*.5,H*.16,Math.max(W,H)*.9);
+    g.addColorStop(0,"#101a3e");g.addColorStop(.5,"#0a0f24");g.addColorStop(1,"#06080f");
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    for(var i=0;i<stars.length;i++){var s=stars[i];
+      var a=reduce?s.b:s.b*(0.55+0.45*Math.sin(t*0.001*s.sp+s.tw));
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.2832);
+      ctx.fillStyle=s.warm?"rgba(255,216,132,"+a+")":"rgba(232,238,255,"+a+")";
+      ctx.fill();
+    }
+    if(!reduce)requestAnimationFrame(draw);
+  }
+  window.addEventListener("resize",function(){resize();if(reduce)draw(0);});
+  resize();if(reduce)draw(0);else requestAnimationFrame(draw);
+
+  /* ---------------- scenario graph ---------------- */
+  var G={
+    start:{star:"Heute",age:"heute · 15",tag:{c:"de",t:"Hermannswerder"},title:"Filippa, du bist hier.",
+      body:["9. Klasse, Gymnasium Hermannswerder — und dieses Jahr bleibst du sitzen. Gerade fühlt sich das wie eine Sackgasse an. Ist es aber nicht: Es ist ein einzelner Punkt.",
+            "Wohin er führt, entscheidet nicht das Jahr hinter dir, sondern die Linie, die du <em>ab jetzt</em> ziehst. Und eine Linie zieht man nur mit einem klaren Ziel vor Augen. Such dir einen Weg — du kannst jeden hier durchspielen."],
+      choices:[
+        {n:"A",t:"In Potsdam bleiben",s:"Da-Vinci-Gesamtschule am Schloss",to:"davinci"},
+        {n:"B",t:"Nach England gehen",s:"Milton Abbey · Internat",to:"milton"}
+      ]},
+
+    /* ---- Germany path ---- */
+    davinci:{star:"Da-Vinci-Schule",age:"≈ 16",tag:{c:"de",t:"Deutschland"},title:"Neustart an der Da-Vinci-Schule.",
+      body:["Du wechselst auf die Gesamtschule am Schloss. Wahrscheinlich wiederholst du die 9. Klasse — es gibt aber eine kleine Chance, direkt in die 10. zu gehen. Beides ist okay: Ein Jahr ist nichts gegen das, was danach kommt.",
+            "Eine Gesamtschule führt genauso zum Abitur wie das Gymnasium. Der Vorteil: vertrautes Umfeld, deine Sprache, deine Freunde."],
+      choices:[
+        {n:"1",t:"9. Klasse sicher wiederholen",s:"sauberes Fundament, kein Risiko",to:"msa"},
+        {n:"2",t:"Den Sprung in die 10. wagen",s:"wenn die Schule mitspielt",to:"msa"}
+      ]},
+    msa:{star:"Mittlerer Abschluss",age:"≈ 17",tag:{c:"de",t:"Deutschland"},title:"Mittlerer Schulabschluss (10.).",
+      body:["Du hast die 10. geschafft — der MSA ist in der Tasche. Jetzt kommt die Entscheidung, die wirklich zählt: weiter in die gymnasiale Oberstufe."],
+      choices:[{n:"→",t:"In die Oberstufe",s:"Kurs auf das Abitur",to:"abitur"}]},
+    abitur:{star:"Abitur",age:"≈ 20",tag:{c:"de",t:"Deutschland"},title:"Abitur in der Tasche.",
+      body:["Drei Jahre Oberstufe, dann das Abitur. In Mathe, Bio und Chemie hast du Gas gegeben — denn das ist die Währung für Medizin.",
+            "Jetzt teilt sich der Weg: Medizin in Deutschland studieren, oder mit dem Abitur in die USA springen."],
+      note:{l:"Ehrlich",t:"Medizin in Deutschland hat einen brutalen Numerus Clausus (oft ~1,0–1,2). Genau dafür zählt jede Note ab jetzt. Es gibt aber auch den TMS-Test und Wege über Wartezeit/Eignung — Noten sind nicht alles, aber sie sind viel."},
+      choices:[
+        {n:"1",t:"Medizin in Deutschland",s:"Studium + Facharzt Dermatologie",to:"demed"},
+        {n:"2",t:"Mit dem Abitur in die USA",s:"College in den Staaten",to:"uscollege"}
+      ]},
+    demed:{star:"Medizin (DE)",age:"≈ 20–31",tag:{c:"de",t:"Deutschland"},title:"Ärztin werden in Deutschland.",
+      body:["6 Jahre Medizinstudium, dann 5 Jahre Facharztausbildung Dermatologie. Am Ende bist du Hautärztin — in Deutschland.",
+            "Und New York? Das geht auch von hier: Mit dem US-Examen (USMLE) kannst du als fertige Ärztin in die USA und Richtung NYU."],
+      note:{l:"Brücke",t:"Der NYU-Traum ist von Deutschland aus erreichbar — über die USMLE-Prüfungen. Der direkteste Weg nach NYU führt aber über ein US-College (Weg 2). Beide Punkte verbinden sich am selben Stern."},
+      choices:[{n:"★",t:"Kurs auf New York halten",s:"über die USMLE in die USA",to:"goal"}]},
+
+    /* ---- England path ---- */
+    milton:{star:"Milton Abbey",age:"≈ 16",tag:{c:"uk",t:"England"},title:"Milton Abbey, England.",
+      body:["Ein Internat in Dorset — eigenes Tempo, Englisch den ganzen Tag, eine Welt, die niemand aus deiner alten Klasse kennt. Hier entscheidest du, wie weit du gehst.",
+            "Drei Optionen, drei sehr verschiedene Linien."],
+      choices:[
+        {n:"1",t:"3 Monate — Englisch-Boost",s:"dann zurück nach Deutschland",to:"short"},
+        {n:"2",t:"1 Jahr eintauchen",s:"dann zurück nach Deutschland",to:"year"},
+        {n:"3",t:"GCSE (2 Jahre)",s:"der britische Schulweg — mit Option A-Levels",to:"gcse"}
+      ]},
+    short:{star:"Englisch-Boost",age:"≈ 16",tag:{c:"uk",t:"England"},title:"Drei Monate, die bleiben.",
+      body:["Ein Term in England. Du kommst mit fließendem Englisch zurück — das ist Gold wert, egal welchen Weg du danach gehst. Internationale Unis, Fachliteratur, NYU: alles auf Englisch.",
+            "Danach steigst du wieder ins deutsche System ein, mit einem klaren Vorsprung."],
+      choices:[{n:"→",t:"Zurück nach Deutschland",s:"weiter Richtung Abitur",to:"backde"}]},
+    year:{star:"Ein Jahr UK",age:"≈ 17",tag:{c:"uk",t:"England"},title:"Ein ganzes Jahr.",
+      body:["Genug Zeit, um wirklich anzukommen: Sprache, Selbstständigkeit, ein internationaler Freundeskreis. Du wächst hier — nicht nur sprachlich.",
+            "Dann zurück nach Deutschland, um das Abitur zu machen — jetzt mit echtem Selbstvertrauen."],
+      choices:[{n:"→",t:"Zurück nach Deutschland",s:"weiter Richtung Abitur",to:"backde"}]},
+    backde:{star:"Zurück in DE",age:"≈ 17–20",tag:{c:"de",t:"Deutschland"},title:"Zurück — und stärker.",
+      body:["Du steigst wieder in die Oberstufe ein und steuerst aufs Abitur zu. Dein Englisch ist jetzt ein Werkzeug, kein Hindernis. Dieselbe Kreuzung wie vorher wartet danach: Medizin in Deutschland oder ab in die USA."],
+      choices:[
+        {n:"1",t:"Abitur & Medizin in Deutschland",s:"Studium + Facharzt",to:"demed"},
+        {n:"2",t:"Abitur & dann in die USA",s:"College in den Staaten",to:"uscollege"}
+      ]},
+    gcse:{star:"GCSE",age:"≈ 16–17",tag:{c:"uk",t:"England"},title:"GCSE — der britische Abschluss.",
+      body:["Zwei Jahre, am Ende deine GCSEs (das britische Pendant zum mittleren Abschluss). Du bist voll im englischen System drin — Naturwissenschaften, Englisch, alles auf dem Niveau, das US-Unis verstehen.",
+            "Jetzt die Schlüsselentscheidung: A-Levels dranhängen — oder zurück nach Deutschland."],
+      choices:[
+        {n:"1",t:"A-Levels dranhängen (2 Jahre)",s:"der direkteste Weg nach NYU",to:"alevels"},
+        {n:"2",t:"Zurück nach Deutschland",s:"Abitur zu Hause machen",to:"backde"}
+      ]},
+    alevels:{star:"A-Levels",age:"≈ 18–19",tag:{c:"uk",t:"England"},title:"A-Levels — die Eintrittskarte.",
+      body:["Drei, vier Fächer in der Tiefe — Biologie, Chemie, dazu deine Wahl. A-Levels werden von US-Universitäten direkt anerkannt. Mit guten Noten bewirbst du dich an der NYU als Undergraduate.",
+            "Damit bist du auf dem Weg, der am geradlinigsten nach New York führt."],
+      note:{l:"Warum",t:"A-Levels + starkes Englisch = du bewirbst dich an US-Colleges wie eine internationale Top-Bewerberin. Kein Umweg über das deutsche System nötig."},
+      choices:[{n:"→",t:"Bewerbung an die NYU",s:"College in New York",to:"uscollege"}]},
+
+    /* ---- convergence in the US ---- */
+    uscollege:{star:"US-College",age:"≈ 19–23",tag:{c:"us",t:"USA"},title:"College in den USA — Bachelor & Pre-Med.",
+      body:["In den USA studiert man Medizin nicht direkt. Zuerst kommt ein 4-jähriger Bachelor — du wählst „Pre-Med\": Biologie, Chemie, dazu der MCAT-Aufnahmetest für die Med School. Hier, an einem US-College (vielleicht schon NYU), legst du das Fundament."],
+      choices:[{n:"→",t:"Bewerbung an die Medical School",s:"nach dem MCAT",to:"medschool"}]},
+    medschool:{star:"Medical School",age:"≈ 23–27",tag:{c:"us",t:"USA"},title:"Medical School — du wirst Ärztin.",
+      body:["Vier Jahre Medical School, an deren Ende der Titel M.D. steht. Erst jetzt — als fertige Ärztin — beginnt die Spezialisierung."],
+      note:{l:"Wichtig",t:"„Dermatologie studieren\" gibt es in den USA nicht. Man wird erst Ärztin und spezialisiert sich danach in der Residency. Und: Die Dermatologie-Residency ist eine der gefragtesten überhaupt. Top-Noten entscheiden. Genau dafür lohnt sich ein klares Ziel — von heute an."},
+      choices:[{n:"→",t:"Bewerbung um die Dermatologie-Residency",s:"die letzte, härteste Hürde",to:"residency"}]},
+    residency:{star:"Dermatology Residency",age:"≈ 27–31",tag:{c:"us",t:"USA"},title:"Residency — Dermatologie.",
+      body:["Vier Jahre Spezialisierung in der Dermatologie, an einem US-Krankenhaus. Du behandelst, forschst, lernst von den Besten. Wenn das die NYU ist, bist du angekommen — am Ort, der heute noch so weit weg scheint."],
+      choices:[{n:"★",t:"Zielstern erreichen",s:"NYU · Dermatologie · New York",to:"goal"}]},
+
+    goal:{star:"NYU",age:"≈ 30+",tag:{c:"us",t:"New York"},isGoal:true,title:"NYU · Dermatologie · New York.",
+      body:["Du bist Dermatologin. In New York. An der NYU."],
+      reprise:"Und jetzt, von hier oben, schau zurück auf deine Punkte, Filippa. Das Jahr, in dem du in Hermannswerder sitzen geblieben bist, war keine Sackgasse — es war der erste Stern deiner Linie. So verbinden sich die Punkte: nur rückwärts. Aber sie verbinden sich nur, wenn du nach vorne ein Ziel hast.",
+      by:"— und das hast du."}
+  };
+
+  /* ---------------- engine ---------------- */
+  var panel=document.getElementById("panel"),trailEl=document.getElementById("trail"),goalStar=document.getElementById("goalstar");
+  var path=[];
+
+  function go(id){ path.push(id); render(); }
+  function back(){ if(path.length>1){ path.pop(); render(); } }
+  function reset(){ path=["start"]; render(); }
+
+  function renderTrail(){
+    var html="";
+    for(var i=0;i<path.length;i++){
+      var n=G[path[i]],cur=i===path.length-1;
+      html+='<li class="tstep'+(cur?' is-current':'')+'"><span class="tstar"></span>'+
+            '<span class="tlabel">'+n.star+'</span>'+
+            '<span class="tage">'+n.age+'</span></li>';
+    }
+    trailEl.innerHTML=html;
+    var atGoal=G[path[path.length-1]].isGoal;
+    goalStar.classList.toggle("lit",atGoal);
+  }
+
+  function render(){
+    var n=G[path[path.length-1]];
+    renderTrail();
+    var h="";
+    h+='<div class="pk">';
+    if(n.tag)h+='<span class="chip '+n.tag.c+'">'+n.tag.t+'</span>';
+    h+='<span class="chip age">'+n.age+'</span></div>';
+
+    if(n.isGoal){
+      h+='<div class="arrived"><div class="crown">✦ Zielstern erreicht ✦</div>';
+      h+='<h1 class="ptitle">'+n.title+'</h1>';
+      h+='<p class="pbody" style="margin-left:auto;margin-right:auto;max-width:40ch">'+n.body[0]+'</p>';
+      h+='<p class="reprise">'+n.reprise+'<span class="by">'+n.by+'</span></p></div>';
+    }else{
+      h+='<h1 class="ptitle">'+n.title+'</h1>';
+      for(var b=0;b<n.body.length;b++)h+='<p class="pbody">'+n.body[b]+'</p>';
+      if(n.note)h+='<div class="note"><span class="nl">'+n.note.l+'</span><p>'+n.note.t+'</p></div>';
+      h+='<div class="choices">';
+      for(var c=0;c<n.choices.length;c++){var ch=n.choices[c];
+        h+='<button class="choice" data-to="'+ch.to+'"><span class="num">'+ch.n+'</span>'+
+           '<span class="ct"><b>'+ch.t+'</b><span>'+ch.s+'</span></span><span class="arr">→</span></button>';
+      }
+      h+='</div>';
+    }
+
+    h+='<div class="controls">';
+    if(path.length>1)h+='<button class="btn" id="b-back">← einen Schritt zurück</button>';
+    if(path.length>1)h+='<button class="btn primary" id="b-reset">↺ neu starten</button>';
+    h+='</div>';
+
+    panel.innerHTML=h;
+    panel.classList.remove("fade");void panel.offsetWidth;panel.classList.add("fade");
+
+    var btns=panel.querySelectorAll(".choice");
+    for(var k=0;k<btns.length;k++)btns[k].addEventListener("click",function(){go(this.getAttribute("data-to"));window.scrollTo({top:0,behavior:reduce?"auto":"smooth"});});
+    var bb=document.getElementById("b-back");if(bb)bb.addEventListener("click",back);
+    var br=document.getElementById("b-reset");if(br)br.addEventListener("click",reset);
+  }
+
+  reset();
+})();
+</script>
+</body>
+</html>
