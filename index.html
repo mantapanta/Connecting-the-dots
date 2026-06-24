@@ -172,7 +172,7 @@
     <p class="eyebrow">für Filippa · 15</p>
     <h1 class="appname">what comes next. <span>&gt;</span> connecting the dots..</h1>
     <p class="lede">„You can't connect the dots looking forward; you can only connect them looking backward."<span class="by">— Steve Jobs, Stanford 2005</span></p>
-    <div class="goalbar"><span class="dot"></span><span>Zielstern:</span> <b>NYU · Dermatologie · New York</b></div>
+    <div class="goalbar"><span class="dot"></span><span>Zielstern:</span> <b>Fachärztin für Dermatologie</b></div>
   </header>
 
   <section class="map" aria-label="Sternkarte deiner Wege">
@@ -190,7 +190,7 @@
     <aside class="rail" aria-label="Dein Weg bisher">
       <div class="goalstar" id="goalstar">
         <span class="gdot"></span>
-        <span class="gt"><b>NYU · Dermatologie</b><small>NEW YORK</small></span>
+        <span class="gt"><b>Dermatologin</b><small>FACHÄRZTIN</small></span>
       </div>
       <h2>Deine Punkte</h2>
       <ul class="trail" id="trail"></ul>
@@ -263,10 +263,13 @@
         {n:"2",t:"Mit dem Abitur in die USA",s:"College in den Staaten",to:"uscollege"}
       ]},
     demed:{star:"Medizin (DE)",age:"≈ 20–31",tag:{c:"de",t:"Deutschland"},title:"Ärztin werden in Deutschland.",
-      body:["6 Jahre Medizinstudium, dann 5 Jahre Facharztausbildung Dermatologie. Am Ende bist du Hautärztin — in Deutschland.",
-            "Und New York? Das geht auch von hier: Mit dem US-Examen (USMLE) kannst du als fertige Ärztin in die USA und Richtung NYU."],
-      note:{l:"Brücke",t:"Der NYU-Traum ist von Deutschland aus erreichbar — über die USMLE-Prüfungen. Der direkteste Weg nach NYU führt aber über ein US-College (Weg 2). Beide Punkte verbinden sich am selben Stern."},
-      choices:[{n:"★",t:"Kurs auf New York halten",s:"über die USMLE in die USA",to:"goal"}]},
+      body:["6 Jahre Medizinstudium, dann 5 Jahre Facharztausbildung Dermatologie. An deren Ende stehst du als fertige Fachärztin für Dermatologie — in Deutschland. Das ist der Zielstern, voll und ganz.",
+            "Und wenn dich New York doch ruft? Auch von hier führt eine Brücke: Mit dem US-Examen (USMLE) kannst du als fertige Ärztin in die USA und an die NYU."],
+      note:{l:"Zwei Wege, ein Stern",t:"Fachärztin für Dermatologie wirst du über eine deutsche Uni genauso wie über den US-Weg. New York ist kein anderes Ziel — nur ein anderer Ort, an dem derselbe Stern leuchtet."},
+      choices:[
+        {n:"★",t:"Fachärztin in Deutschland werden",s:"der Zielstern — in Deutschland",to:"goal"},
+        {n:"2",t:"Über die USMLE nach New York",s:"als fertige Ärztin an die NYU",to:"residency"}
+      ]},
 
     /* ---- England path · Milton Abbey ---- */
     milton:{star:"Milton Abbey",age:"≈ 16",tag:{c:"uk",t:"England"},title:"Milton Abbey, England.",
@@ -315,13 +318,14 @@
       body:["Vier Jahre Medical School, an deren Ende der Titel M.D. steht. Erst jetzt — als fertige Ärztin — beginnt die Spezialisierung."],
       note:{l:"Wichtig",t:"„Dermatologie studieren\" gibt es in den USA nicht. Man wird erst Ärztin und spezialisiert sich danach in der Residency. Und: Die Dermatologie-Residency ist eine der gefragtesten überhaupt. Top-Noten entscheiden. Genau dafür lohnt sich ein klares Ziel — von heute an."},
       choices:[{n:"→",t:"Bewerbung um die Dermatologie-Residency",s:"die letzte, härteste Hürde",to:"residency"}]},
-    residency:{star:"Dermatology Residency",age:"≈ 27–31",tag:{c:"us",t:"USA"},title:"Residency — Dermatologie.",
-      body:["Vier Jahre Spezialisierung in der Dermatologie, an einem US-Krankenhaus. Du behandelst, forschst, lernst von den Besten. Wenn das die NYU ist, bist du angekommen — am Ort, der heute noch so weit weg scheint."],
-      choices:[{n:"★",t:"Zielstern erreichen",s:"NYU · Dermatologie · New York",to:"goal"}]},
+    residency:{star:"NYU · Residency",age:"≈ 27–31",tag:{c:"us",t:"New York"},title:"Residency — Dermatologie an der NYU.",
+      body:["Vier Jahre Spezialisierung in der Dermatologie an einem US-Krankenhaus — und wenn das die NYU ist, stehst du genau an dem Ort, der heute noch unendlich weit weg scheint. Du behandelst, forschst, lernst von den Besten.",
+            "Aber halt: Die NYU ist nicht das Ziel. Sie ist vielleicht der hellste Punkt kurz davor. Das Ziel ist das, was danach kommt."],
+      choices:[{n:"★",t:"Fachärztin für Dermatologie werden",s:"der Zielstern — fertig ausgebildet",to:"goal"}]},
 
-    goal:{star:"NYU",age:"≈ 30+",tag:{c:"us",t:"New York"},isGoal:true,title:"NYU · Dermatologie · New York.",
-      body:["Du bist Dermatologin. In New York. An der NYU."],
-      reprise:"Und jetzt, von hier oben, schau zurück auf deine Punkte, Filippa. Das Jahr, in dem du in Hermannswerder sitzen geblieben bist, war keine Sackgasse — es war der erste Stern deiner Linie. So verbinden sich die Punkte: nur rückwärts. Aber sie verbinden sich nur, wenn du nach vorne ein Ziel hast.",
+    goal:{star:"Dermatologin",age:"≈ 30+",tag:{c:"us",t:"am Ziel"},isGoal:true,title:"Fachärztin für Dermatologie.",
+      body:["Du bist fertig ausgebildete Dermatologin. Ob in Berlin, Potsdam oder New York — der Stern, den du heute kaum erkennen kannst, leuchtet jetzt direkt über dir."],
+      reprise:"Und jetzt, von hier oben, schau zurück auf deine Punkte, Filippa. Das Jahr, in dem du in Hermannswerder sitzen geblieben bist, war keine Sackgasse — es war der erste Stern deiner Linie. Ob dein Weg über Potsdam, über England oder über New York lief: Sie alle führen zu demselben Licht. So verbinden sich die Punkte — nur rückwärts. Aber sie verbinden sich nur, wenn du nach vorne ein Ziel hast.",
       by:"— und das hast du."}
   };
 
@@ -336,7 +340,7 @@
     msa:[.31,.13], abitur:[.45,.18], ukterm:[.30,.60], ukyear:[.30,.80],
     uktrack:[.32,.96], backde:[.47,.74], alevels:[.50,.95],
     demed:[.64,.30], uscollege:[.64,.61], medschool:[.77,.58],
-    residency:[.88,.49], goal:[.96,.39]
+    residency:[.86,.47], goal:[.97,.30]
   };
 
   function scrollTop(){window.scrollTo({top:0,behavior:reduce?"auto":"smooth"});}
