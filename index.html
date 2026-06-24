@@ -244,8 +244,8 @@
       ]},
 
     /* ---- Germany path ---- */
-    davinci:{star:"Da-Vinci-Schule",age:"≈ 16",tag:{c:"de",t:"Deutschland"},title:"Neustart an der Da-Vinci-Schule.",
-      body:["Du wechselst auf die Gesamtschule am Schloss. Wahrscheinlich wiederholst du die 9. Klasse — es gibt aber eine kleine Chance, direkt in die 10. zu gehen. Beides ist okay: Ein Jahr ist nichts gegen das, was danach kommt.",
+    davinci:{star:"Da-Vinci-Schule",age:"≈ 16–17",tag:{c:"de",t:"Deutschland"},title:"Neustart an der Da-Vinci-Schule.",
+      body:["Du wechselst auf die Gesamtschule am Schloss — ob direkt aus Potsdam oder zurück aus England. Wahrscheinlich wiederholst du die 9. Klasse — es gibt aber eine kleine Chance, direkt in die 10. zu gehen. Beides ist okay: Ein Jahr ist nichts gegen das, was danach kommt.",
             "Eine Gesamtschule führt genauso zum Abitur wie das Gymnasium. Der Vorteil: vertrautes Umfeld, deine Sprache, deine Freunde."],
       choices:[
         {n:"1",t:"9. Klasse sicher wiederholen",s:"sauberes Fundament, kein Risiko",to:"msa"},
@@ -283,29 +283,20 @@
       ]},
     ukterm:{star:"1st Term · 6th Form",age:"≈ 16",tag:{c:"uk",t:"England"},title:"Ein Term in der 6th Form — ohne Prüfungsstress.",
       body:["Du steigst für einen Term (≈ 3 Monate) in die Lower Sixth ein und wählst drei Fächer, die dir Spaß machen — Art, English, was dich packt. Kein GCSE-Block, kein Notendruck: Es geht ums Eintauchen, die Sprache, das Selbstvertrauen.",
-            "Nach Weihnachten kommst du zurück nach Deutschland — mit deutlich besserem Englisch. Die einzige offene Frage: in welche Klasse steigst du wieder ein?"],
+            "Nach Weihnachten kommst du zurück nach Deutschland — mit deutlich besserem Englisch. Du steigst wieder in die Gesamtschule ein; ob in die 9. (Wiederholung) oder die 10., klärt sich genau dort."],
       note:{l:"Warum 6th",t:"In der 5th Form (Year 11) säßest du mitten in der GCSE-Prüfungsvorbereitung. Die 6th Form lässt dich für den kurzen Term frei schnuppern — ohne Abschlussdruck."},
-      choices:[
-        {n:"1",t:"Zurück in die 9. (Wiederholung)",s:"nahtlos nach Weihnachten — die 9. hast du ja schon",to:"backde"},
-        {n:"2",t:"Falls erlaubt: weiter in die 10.",s:"wenn die Gesamtschule mitspielt",to:"backde"}
-      ]},
+      choices:[{n:"→",t:"Zurück an die Da-Vinci-Schule",s:"Gesamtschule — 9. oder 10. entscheidet sich dort",to:"davinci"}]},
     ukyear:{star:"Ein Jahr UK",age:"≈ 17",tag:{c:"uk",t:"England"},title:"Ein ganzes Jahr.",
       body:["Genug Zeit, um wirklich anzukommen: Sprache, Selbstständigkeit, ein internationaler Freundeskreis. Du wächst hier — nicht nur sprachlich.",
-            "Dann zurück nach Deutschland, um über die Oberstufe das Abitur zu machen — jetzt mit echtem Selbstvertrauen."],
-      choices:[{n:"→",t:"Zurück nach Deutschland",s:"weiter Richtung Abitur",to:"backde"}]},
+            "Dann zurück nach Deutschland: Du steigst wieder in die Gesamtschule ein und steuerst über MSA und Oberstufe aufs Abitur zu — jetzt mit echtem Selbstvertrauen."],
+      choices:[{n:"→",t:"Zurück an die Da-Vinci-Schule",s:"Gesamtschule, weiter Richtung Abitur",to:"davinci"}]},
     uktrack:{star:"UK-Track (GCSE)",age:"≈ 16–18",tag:{c:"uk",t:"England"},title:"Du bleibst — der britische Weg.",
       body:["England zündet bei dir, du erlebst hier deinen Durchbruch und willst weitermachen. Dann brauchst du das Fundament des Systems: die <em>GCSEs</em>. Der saubere Einstieg dafür ist Year 10 — die zwei GCSE-Jahre. Gemessen am Alter ist das ein Jahr „zurück\", aber es ist der richtige Start in den UK-Track.",
             "Danach die 6th Form mit den A-Levels — und die sind die direkte Eintrittskarte für US-Unis wie die NYU."],
       note:{l:"Ehrlich",t:"Vom Alter her gehörst du in die 5th Form (Year 11, Prüfungsjahr) — da mitten im Block einzusteigen ist schwer. Für echte GCSEs ist Year 10 der klare Weg. Manche Schulen bieten auch verkürzte 1-Jahres-GCSEs für Quereinsteiger an — das wäre die konkrete Rückfrage an Milton Abbey."},
       choices:[
         {n:"1",t:"A-Levels dranhängen",s:"weiter auf dem UK-Track (2 Jahre)",to:"alevels"},
-        {n:"2",t:"Mit GCSE zurück nach Deutschland",s:"zurück in die Oberstufe Richtung Abitur",to:"backde"}
-      ]},
-    backde:{star:"Zurück in DE",age:"≈ 16–20",tag:{c:"de",t:"Deutschland"},title:"Zurück — und stärker.",
-      body:["Du steigst wieder ins deutsche System ein — je nachdem, wie lange du in England warst, in die passende Stufe (9., 10. oder direkt die Oberstufe) — und steuerst aufs Abitur zu. Dein Englisch ist jetzt ein Werkzeug, kein Hindernis. Danach wartet dieselbe Kreuzung: Medizin in Deutschland oder ab in die USA."],
-      choices:[
-        {n:"1",t:"Abitur & Medizin in Deutschland",s:"Studium + Facharzt",to:"demed"},
-        {n:"2",t:"Abitur & dann in die USA",s:"College in den Staaten",to:"uscollege"}
+        {n:"2",t:"Mit GCSE zurück nach Deutschland",s:"GCSE ≈ Mittlerer Abschluss → weiter in die Oberstufe",to:"msa"}
       ]},
     alevels:{star:"A-Levels",age:"≈ 18–19",tag:{c:"uk",t:"England"},title:"A-Levels — die Eintrittskarte.",
       body:["Drei, vier Fächer in der Tiefe — Biologie, Chemie, dazu deine Wahl. A-Levels sind eine vollwertige Hochschulreife: Sie öffnen US-Colleges genauso wie deutsche Unis.",
@@ -344,7 +335,7 @@
   var POS={
     start:[.04,.50], davinci:[.18,.20], milton:[.17,.80],
     msa:[.31,.13], abitur:[.45,.18], ukterm:[.30,.60], ukyear:[.30,.80],
-    uktrack:[.32,.96], backde:[.47,.74], alevels:[.50,.95],
+    uktrack:[.32,.96], alevels:[.50,.95],
     demed:[.64,.30], uscollege:[.64,.61], medschool:[.77,.58],
     residency:[.86,.47], goal:[.97,.30]
   };
