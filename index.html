@@ -297,18 +297,24 @@
       body:["England zündet bei dir, du erlebst hier deinen Durchbruch und willst weitermachen. Dann brauchst du das Fundament des Systems: die <em>GCSEs</em>. Der saubere Einstieg dafür ist Year 10 — die zwei GCSE-Jahre. Gemessen am Alter ist das ein Jahr „zurück\", aber es ist der richtige Start in den UK-Track.",
             "Danach die 6th Form mit den A-Levels — und die sind die direkte Eintrittskarte für US-Unis wie die NYU."],
       note:{l:"Ehrlich",t:"Vom Alter her gehörst du in die 5th Form (Year 11, Prüfungsjahr) — da mitten im Block einzusteigen ist schwer. Für echte GCSEs ist Year 10 der klare Weg. Manche Schulen bieten auch verkürzte 1-Jahres-GCSEs für Quereinsteiger an — das wäre die konkrete Rückfrage an Milton Abbey."},
-      choices:[{n:"→",t:"GCSEs, dann A-Levels",s:"zwei Jahre, dann die Oberstufe UK",to:"alevels"}]},
+      choices:[
+        {n:"1",t:"A-Levels dranhängen",s:"weiter auf dem UK-Track (2 Jahre)",to:"alevels"},
+        {n:"2",t:"Mit GCSE zurück nach Deutschland",s:"zurück in die Oberstufe Richtung Abitur",to:"backde"}
+      ]},
     backde:{star:"Zurück in DE",age:"≈ 16–20",tag:{c:"de",t:"Deutschland"},title:"Zurück — und stärker.",
-      body:["Du steigst wieder ins deutsche System ein (9. oder 10. Klasse) und steuerst über die gymnasiale Oberstufe aufs Abitur zu. Dein Englisch ist jetzt ein Werkzeug, kein Hindernis. Danach wartet dieselbe Kreuzung: Medizin in Deutschland oder ab in die USA."],
+      body:["Du steigst wieder ins deutsche System ein — je nachdem, wie lange du in England warst, in die passende Stufe (9., 10. oder direkt die Oberstufe) — und steuerst aufs Abitur zu. Dein Englisch ist jetzt ein Werkzeug, kein Hindernis. Danach wartet dieselbe Kreuzung: Medizin in Deutschland oder ab in die USA."],
       choices:[
         {n:"1",t:"Abitur & Medizin in Deutschland",s:"Studium + Facharzt",to:"demed"},
         {n:"2",t:"Abitur & dann in die USA",s:"College in den Staaten",to:"uscollege"}
       ]},
     alevels:{star:"A-Levels",age:"≈ 18–19",tag:{c:"uk",t:"England"},title:"A-Levels — die Eintrittskarte.",
-      body:["Drei, vier Fächer in der Tiefe — Biologie, Chemie, dazu deine Wahl. A-Levels werden von US-Universitäten direkt anerkannt. Mit guten Noten bewirbst du dich an der NYU als Undergraduate.",
-            "Damit bist du auf dem Weg, der am geradlinigsten nach New York führt."],
-      note:{l:"Warum",t:"A-Levels + starkes Englisch = du bewirbst dich an US-Colleges wie eine internationale Top-Bewerberin. Kein Umweg über das deutsche System nötig."},
-      choices:[{n:"→",t:"Bewerbung an die NYU",s:"College in New York",to:"uscollege"}]},
+      body:["Drei, vier Fächer in der Tiefe — Biologie, Chemie, dazu deine Wahl. A-Levels sind eine vollwertige Hochschulreife: Sie öffnen US-Colleges genauso wie deutsche Unis.",
+            "Jetzt die Gabelung: rüber in die USA — oder mit den A-Levels zurück nach Deutschland ins Medizinstudium."],
+      note:{l:"Gut zu wissen",t:"A-Levels werden von US-Colleges direkt anerkannt; für ein Medizinstudium in Deutschland gelten sie (mit den richtigen Fächern) als Hochschulzugang. Beide Türen stehen offen."},
+      choices:[
+        {n:"1",t:"Bewerbung an US-Colleges",s:"Pre-Med, Richtung NYU",to:"uscollege"},
+        {n:"2",t:"Zurück nach Deutschland",s:"mit A-Levels Medizin studieren",to:"demed"}
+      ]},
 
     /* ---- convergence in the US ---- */
     uscollege:{star:"US-College",age:"≈ 19–23",tag:{c:"us",t:"USA"},title:"College in den USA — Bachelor & Pre-Med.",
